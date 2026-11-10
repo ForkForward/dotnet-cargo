@@ -17,7 +17,7 @@ The open-source continuation of [MassTransit](https://github.com/MassTransit/Mas
 
 ## Moving from MassTransit 8
 
-Replace each `MassTransit.*` package reference with the `ForkForward.Cargo` package in the table. The code does not change: the types, their members and the behaviour are those of MassTransit 8.5.12.
+Replace each `MassTransit.*` package reference with the `ForkForward.Cargo` package in the table. The code does not change: the types, their members and the behaviour are those of MassTransit 8.5.12. The guide [Moving from MassTransit 8](https://forkforward.dev/dotnet-cargo/introduction/moving-from-masstransit/) lists what else to know.
 
 ```csharp
 using MassTransit;
@@ -31,5 +31,6 @@ builder.Services.AddMassTransit(x =>
 
 ## Links
 
+- Documentation: https://forkforward.dev/dotnet-cargo/
 - Source: https://github.com/ForkForward/dotnet-cargo
 - Licence: Apache License 2.0. Copyright 2007-2024 Chris Patterson; modifications copyright 2026 ForkForward contributors. See LICENSE and NOTICE in the package.
