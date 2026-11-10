@@ -6,9 +6,11 @@ using System;
 public class UsageTelemetryOptions
 {
     /// <summary>
-    /// Defaults to true, if set to false, all usage telemetry is disabled
+    /// If true, usage telemetry is collected and reported to the original MassTransit project
+    /// (usage-tracking.masstransit.io). Defaults to false in ForkForward Cargo; MassTransit 8 defaulted to true.
+    /// The environment variable MASSTRANSIT_USAGE_TELEMETRY, when set, takes precedence over this value.
     /// </summary>
-    public bool Enabled { get; set; } = true;
+    public bool Enabled { get; set; }
 
     /// <summary>
     /// Specify your CustomerId if you're an existing customer. If not specified, may be pulled from the license key if present.
