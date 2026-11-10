@@ -10,8 +10,12 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <PackageTags>MassTransit;NUnit</PackageTags>
-    <Description>MassTransit Test Framework (NUnit); $(Description)</Description>
+    <!-- Published as ForkForward.Cargo.Testing. It continues the original package MassTransit.TestFramework; the assembly name and namespaces are unchanged. -->
+    <IsPackable>true</IsPackable>
+    <PackageId>ForkForward.Cargo.Testing</PackageId>
+    <Title>ForkForward.Cargo.Testing</Title>
+    <PackageTags>forkforward;cargo;masstransit;messaging;testing;nunit</PackageTags>
+    <Description>Test framework (NUnit) for ForkForward Cargo; $(Description)</Description>
   </PropertyGroup>
 
   <ItemGroup>

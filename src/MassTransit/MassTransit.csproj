@@ -10,7 +10,11 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <PackageTags>MassTransit</PackageTags>
+    <!-- Published as ForkForward.Cargo. It continues the original package MassTransit; the assembly name and namespaces are unchanged. -->
+    <IsPackable>true</IsPackable>
+    <PackageId>ForkForward.Cargo</PackageId>
+    <Title>ForkForward.Cargo</Title>
+    <PackageTags>forkforward;cargo;masstransit;messaging;servicebus</PackageTags>
     <Description>$(Description)</Description>
   </PropertyGroup>
 

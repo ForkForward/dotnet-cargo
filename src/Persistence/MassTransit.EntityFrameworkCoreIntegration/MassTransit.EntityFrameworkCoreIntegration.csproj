@@ -7,10 +7,12 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <PackageId>MassTransit.EntityFrameworkCore</PackageId>
-    <Title>MassTransit.EntityFrameworkCore</Title>
-    <PackageTags>MassTransit;EF;EFCore;EntityFramework;EntityFrameworkCore</PackageTags>
-    <Description>MassTransit Entity Framework Core persistence support; $(Description)</Description>
+    <!-- Published as ForkForward.Cargo.EntityFrameworkCore. It continues the original package MassTransit.EntityFrameworkCore; the assembly name and namespaces are unchanged. -->
+    <IsPackable>true</IsPackable>
+    <PackageId>ForkForward.Cargo.EntityFrameworkCore</PackageId>
+    <Title>ForkForward.Cargo.EntityFrameworkCore</Title>
+    <PackageTags>forkforward;cargo;masstransit;messaging;efcore;entityframeworkcore</PackageTags>
+    <Description>Entity Framework Core persistence for ForkForward Cargo; $(Description)</Description>
   </PropertyGroup>
 
   <ItemGroup>
