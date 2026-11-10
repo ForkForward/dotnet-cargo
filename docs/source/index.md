@@ -7,7 +7,8 @@ The open-source continuation of MassTransit 8, the distributed application frame
     ForkForward Cargo continues [MassTransit](https://github.com/MassTransit/MassTransit) 8 from the last code
     published under the Apache License 2.0, release 8.5.12. This documentation was written by Chris Patterson and the
     MassTransit contributors for MassTransit 8 and is inherited from the original project. It still describes this
-    code: only the package names are new, and the namespaces, types and assemblies are still called `MassTransit`.
+    code: the package names are new and usage telemetry is off by default, but the namespaces, types and assemblies
+    are still called `MassTransit`.
     The pages keep calling the framework MassTransit where they describe it; see
     [Moving from MassTransit 8](introduction/moving-from-masstransit.md) for what differs.
 

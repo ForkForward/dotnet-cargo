@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -26,6 +25,9 @@ public class UsageTracker :
     IUsageTracker,
     IAsyncDisposable
 {
+    const string EnabledVariable = "MASSTRANSIT_USAGE_TELEMETRY";
+    const string AddressVariable = "MASSTRANSIT_USAGE_TELEMETRY_ADDRESS";
+
     readonly TimeSpan _httpClientTimeout = TimeSpan.FromSeconds(10);
     readonly object _lock = new object();
     readonly UsageTelemetryOptions _options;
@@ -35,12 +37,17 @@ public class UsageTracker :
     ILogContext? _logContext;
     Task? _reportTask;
 
+    // Where the report is posted. There is no default address: without one, the report is only written to the log.
+    readonly Uri? _reportAddress;
+    readonly string? _invalidReportAddress;
+    bool _reportAddressChecked;
+
     public UsageTracker(IOptions<UsageTelemetryOptions> usageTrackingOptions)
     {
         _options = usageTrackingOptions.Value;
         _usages = [];
 
-        var variable = Environment.GetEnvironmentVariable("MASSTRANSIT_USAGE_TELEMETRY");
+        var variable = Environment.GetEnvironmentVariable(EnabledVariable);
         if (!string.IsNullOrWhiteSpace(variable))
         {
             if (bool.TryParse(variable, out var enabled))
@@ -56,6 +63,8 @@ public class UsageTracker :
 
         if (_options.Enabled)
         {
+            _reportAddress = GetReportAddress(_options, out _invalidReportAddress);
+
             Telemetry = new MassTransitUsageTelemetry
             {
                 Id = NewId.NextGuid(),
@@ -111,6 +120,8 @@ public class UsageTracker :
         lock (_lock)
         {
             _logContext ??= LogContext.Current;
+
+            WarnIfNotReported();
 
             var busName = nameof(IBus);
 
@@ -255,21 +266,26 @@ public class UsageTracker :
 
             LogContext.Info?.Log("Usage Telemetry: {Telemetry}", json);
 
-            var jsonContent = new StringContent(json, Encoding.UTF8, "application/json");
+            // Without a valid address the report stays in the log; the warning was written when the bus was configured.
+            if (_reportAddress is null)
+                return;
 
-            var httpClient = new HttpClient();
+            using var jsonContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+            using var httpClient = new HttpClient();
             httpClient.Timeout = _httpClientTimeout;
 
-            var uri = new UriBuilder
+            try
             {
-                Scheme = Uri.UriSchemeHttps,
-                Host = string.Join(".", "usage-tracking", "masstransit", "io"),
-                Path = "/usage",
-            }.Uri;
-
-            var response = await httpClient.PostAsync(uri, jsonContent);
-            if (response.StatusCode != HttpStatusCode.Accepted)
-                LogContext.Warning?.Log("Failed to report usage telemetry: {StatusCode}", response.StatusCode);
+                using var response = await httpClient.PostAsync(_reportAddress, jsonContent);
+                if (!response.IsSuccessStatusCode)
+                    LogContext.Warning?.Log("Failed to report usage telemetry to {Address}: {StatusCode}", _reportAddress, response.StatusCode);
+            }
+            catch (Exception exception)
+            {
+                // Includes the timeout, which HttpClient reports as a cancellation and the catch below would hide.
+                LogContext.Warning?.Log(exception, "Failed to report usage telemetry to {Address}", _reportAddress);
+            }
         }
         catch (OperationCanceledException)
         {
@@ -277,6 +293,51 @@ public class UsageTracker :
         catch (Exception exception)
         {
             LogContext.Warning?.Log(exception, "Failed to report usage telemetry");
+        }
+    }
+
+    /// <summary>
+    /// The environment variable takes precedence over the options. Only an absolute http or https address is used.
+    /// </summary>
+    static Uri? GetReportAddress(UsageTelemetryOptions options, out string? invalidAddress)
+    {
+        invalidAddress = null;
+
+        var variable = Environment.GetEnvironmentVariable(AddressVariable);
+        var configured = string.IsNullOrWhiteSpace(variable) ? options.ReportAddress?.OriginalString : variable!.Trim();
+        if (string.IsNullOrWhiteSpace(configured))
+            return null;
+
+        if (Uri.TryCreate(configured, UriKind.Absolute, out var address)
+            && (address.Scheme == Uri.UriSchemeHttp || address.Scheme == Uri.UriSchemeHttps))
+            return address;
+
+        invalidAddress = configured;
+        return null;
+    }
+
+    /// <summary>
+    /// Says once, when the first bus is configured, that the report will not be sent anywhere.
+    /// </summary>
+    void WarnIfNotReported()
+    {
+        if (_reportAddressChecked)
+            return;
+
+        _reportAddressChecked = true;
+
+        if (_reportAddress is not null)
+            return;
+
+        if (_invalidReportAddress is null)
+        {
+            LogContext.Warning?.Log("Usage telemetry is enabled, but no report address is set (UsageTelemetryOptions.ReportAddress or {Variable})."
+                + " The report is written to the log only and is not sent.", AddressVariable);
+        }
+        else
+        {
+            LogContext.Warning?.Log("Usage telemetry is enabled, but the report address {Address} is not an absolute http or https address."
+                + " The report is written to the log only and is not sent.", _invalidReportAddress);
         }
     }
 

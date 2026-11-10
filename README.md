@@ -36,7 +36,8 @@ If you want MassTransit 9, new features from the original authors, or commercial
 
 ## Status
 
-- The fork has just been created. The code is MassTransit 8.5.12 unchanged: only the package names are new; the assemblies and namespaces are still called `MassTransit`.
+- The fork has just been created. The code is MassTransit 8.5.12 with two changes: the package names are new, and usage telemetry is off by default. The assemblies and namespaces are still called `MassTransit`.
+- **Usage telemetry:** MassTransit 8 collects it and sends it to a server of the original MassTransit project (`usage-tracking.masstransit.io`) unless it is turned off. ForkForward Cargo collects nothing unless it is turned on (`Enabled = true` in `ConfigureUsageTelemetryOptions`, or `MASSTRANSIT_USAGE_TELEMETRY=true`), and then posts the report only to the address you set (`ReportAddress`, or `MASSTRANSIT_USAGE_TELEMETRY_ADDRESS`). Without an address, the report is only written to the log, and a warning says so ([details](https://forkforward.dev/dotnet-cargo/documentation/configuration/usage-telemetry/)).
 - **Preview packages** are published to nuget.org from the `develop` branch, with versions such as `8.6.0-preview.0.12`. Stable releases will be published from version tags such as `v8.6.0`. The `MassTransit` packages on nuget.org belong to the original authors, not to this fork.
 - A preview package contains `MassTransit.dll` signed with the original key, so a project must not reference ForkForward Cargo and the original `MassTransit` packages at the same time.
 - The project is published under its own name:
