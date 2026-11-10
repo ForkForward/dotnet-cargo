@@ -1,0 +1,22 @@
+# Routing Slips
+
+To understand routing slips and how to create one, refer to the [Routing Slip](../../concepts/routing-slips.md) section.
+
+## Configuring Routing Slips
+
+```csharp
+services.AddMassTransit(cfg => 
+{
+    // Execute Only Activities
+    cfg.AddExecuteActivity<SampleExecuteActivity, SampleAgentArgs>();
+
+    // Activities that have an execute and a compensation
+    cfg.AddActivity<SampleCompensatingActivity, SampleCompensatingArgs, SampleCompensatingLog>();
+
+    cfg.Using[Transport]((context, transport) => 
+    {
+        // Register the Activties with the Transport
+        transport.ConfigureEndpoints(context);
+    });
+})
+```
