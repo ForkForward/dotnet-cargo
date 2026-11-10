@@ -6,9 +6,18 @@ using System;
 public class UsageTelemetryOptions
 {
     /// <summary>
-    /// Defaults to true, if set to false, all usage telemetry is disabled
+    /// If true, usage telemetry is collected, written to the log, and posted to <see cref="ReportAddress" />.
+    /// Defaults to false in ForkForward Cargo; MassTransit 8 defaulted to true and posted it to the original MassTransit project.
+    /// The environment variable MASSTRANSIT_USAGE_TELEMETRY, when set, takes precedence over this value.
     /// </summary>
-    public bool Enabled { get; set; } = true;
+    public bool Enabled { get; set; }
+
+    /// <summary>
+    /// The absolute http or https address the usage telemetry report is posted to, as JSON, when <see cref="Enabled" /> is true.
+    /// There is no default: without an address, the report is only written to the log, and a warning says so.
+    /// The environment variable MASSTRANSIT_USAGE_TELEMETRY_ADDRESS, when set, takes precedence over this value.
+    /// </summary>
+    public Uri? ReportAddress { get; set; }
 
     /// <summary>
     /// Specify your CustomerId if you're an existing customer. If not specified, may be pulled from the license key if present.

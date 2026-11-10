@@ -1,12 +1,46 @@
 # Usage Telemetry
 
-!!! warning "Reported to the original MassTransit project"
+!!! info "In ForkForward Cargo: off by default, and sent only where you say"
 
-    ForkForward Cargo contains this feature unchanged from MassTransit 8.5.12, and it is on by default: about five
-    minutes after the bus starts, the application sends the report shown below to
-    `https://usage-tracking.masstransit.io/usage`, a server of the original MassTransit project. ForkForward does not
-    receive this data and has no say over what happens to it. To turn it off, use one of the [opt-out](#opt-out)
-    settings. The rest of this page is the original project's description, where "we" is the MassTransit team.
+    MassTransit 8 collects this usage telemetry by default and sends it to
+    `https://usage-tracking.masstransit.io/usage`, a server of the original MassTransit project. ForkForward Cargo
+    changes two things:
+
+    - It is **off by default**: nothing is collected or sent unless you turn it on.
+    - It has **no built-in destination**: the report is posted only to the address you set. Without one, it is
+      written to the log only, and a warning says so when the bus is configured.
+
+    ```csharp
+    services.AddMassTransit(x =>
+    {
+        x.ConfigureUsageTelemetryOptions(options =>
+        {
+            options.Enabled = true;
+            options.ReportAddress = new Uri("https://telemetry.example.com/masstransit/usage");
+        });
+    });
+    ```
+
+    | Setting | Option | Environment variable |
+    |---|---|---|
+    | Turn it on | `Enabled = true` | `MASSTRANSIT_USAGE_TELEMETRY=true` |
+    | Where to post it | `ReportAddress`, an absolute http or https address | `MASSTRANSIT_USAGE_TELEMETRY_ADDRESS` |
+
+    An environment variable that is set takes precedence over the code, `DisableUsageTelemetry` included.
+
+    **The report.** About five minutes after all buses have started, the application posts one JSON document to the
+    address: the example under [Content](#content), with `Content-Type: application/json` and property names in
+    snake_case. Any 2xx response counts as received. Anything else, a refused connection, or no answer within 10
+    seconds is logged as a warning, and the application carries on. The same JSON is always written to the log at
+    Information level (`Usage Telemetry: {...}`), so it also reaches whatever collects your logs. The receiver has
+    to accept a plain JSON POST; an OpenTelemetry (OTLP) endpoint does not, because OTLP has its own format.
+
+    **To report to the original MassTransit project**, as MassTransit 8 did, set the address to
+    `https://usage-tracking.masstransit.io/usage`. ForkForward does not receive that data and has no say over what
+    happens to it.
+
+    The rest of this page is the original project's description, where "we" is the MassTransit team, written for when
+    the telemetry was on by default and always sent to them.
 
 As part of our ongoing commitment to improving MassTransit, in v8.40 we are introducing anonymous usage telemetry to better understand how the community utilizes the framework. This feature will provide valuable insights into bus configurations, transport usage, and endpoint patterns, helping us identify trends, optimize performance, and prioritize future enhancements. By collecting only non-identifiable data, we ensure user privacy while enabling more informed development decisions that benefit the entire MassTransit ecosystem.
 
@@ -81,7 +115,7 @@ The example report below demonstrates the collected data. By default, only minim
 
 ## Reporting
 
-Usage telemetry is sent once, five minutes after the bus starts (or after all buses have started if you're using MultiBus). If the bus runs for less than five minutes, no data is reported. Telemetry is not captured or sent when using the test harness or when debugging the application. Reporting is non-blocking and does not impact the startup or shutdown of MassTransit or your application. All reports are securely transmitted to an endpoint within the `masstransit.io` domain.
+Usage telemetry is sent once, five minutes after the bus starts (or after all buses have started if you're using MultiBus). If the bus runs for less than five minutes, no data is reported. Telemetry is not captured or sent when using the test harness or when debugging the application. Reporting is non-blocking and does not impact the startup or shutdown of MassTransit or your application. In ForkForward Cargo, reports are sent only to the address you set, as described above.
 
 ## Opt-Out
 

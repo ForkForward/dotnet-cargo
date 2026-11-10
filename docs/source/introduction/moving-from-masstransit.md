@@ -1,7 +1,7 @@
 # Moving from MassTransit 8
 
-ForkForward Cargo is MassTransit 8.5.12 under new package names. The namespaces, the types, their members and the
-behaviour are the same; what changes is the name of the packages.
+ForkForward Cargo is MassTransit 8.5.12 under new package names, with usage telemetry off by default. The namespaces,
+the types, their members and the rest of the behaviour are the same.
 
 ## One step
 
@@ -34,13 +34,16 @@ That is all. The code stays exactly as it is, `using MassTransit;` included.
   and member keep their names.
 - **Assemblies.** The packages contain `MassTransit.dll`, `MassTransit.Abstractions.dll` and the other assemblies under
   their original names, signed with the original key.
-- **Behaviour.** The code is MassTransit 8.5.12, so it behaves the same, including the
-  [usage telemetry](../documentation/configuration/usage-telemetry.md) it reports to the original MassTransit project
-  unless it is turned off.
+- **Behaviour.** The code is MassTransit 8.5.12, so it behaves the same, except for usage telemetry (below).
 - **Documentation.** These pages are MassTransit 8's, with the names of the published packages updated.
 
 ## What else changes
 
+- **Usage telemetry is off.** MassTransit 8 reports
+  [usage telemetry](../documentation/configuration/usage-telemetry.md) to a server of the original project by default.
+  ForkForward Cargo collects nothing unless it is turned on, and then posts the report only to the address you set
+  (`ReportAddress`); without one, the report stays in the log. Calls to `DisableUsageTelemetry` keep working and are no
+  longer needed.
 - **Both packages at once.** A project must not reference ForkForward Cargo packages and the original `MassTransit`
   packages at the same time, directly or through another package: both contain `MassTransit.dll`. Move a project, and
   the libraries it uses, as a whole.
