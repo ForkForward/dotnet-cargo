@@ -59,7 +59,8 @@ If you want MassTransit 9, new features from the original authors, or commercial
   | `ForkForward.Cargo.EntityFrameworkCore` | `MassTransit.EntityFrameworkCore` | Entity Framework Core integration |
   | `ForkForward.Cargo.Testing` | `MassTransit.TestFramework` | Testing tools |
 
-  Not decided yet: the names of the other packages (the remaining transports, persistence, scheduling and riders), which are not published until then, and whether the namespaces and assembly names change together with the package names.
+  Not decided yet: the names of the other packages (the remaining transports, persistence, scheduling and riders), which are not published until then.
+- **Planned for the end of December 2026: new namespaces.** The original authors have announced updates to MassTransit 8 until at least the end of 2026 ([announcement](https://masstransit.io/introduction/v9-announcement)). Until then, ForkForward Cargo keeps the `MassTransit` namespaces and type names, so moving between MassTransit 8 and ForkForward Cargo only means changing package references. At the end of December, one new version renames the namespaces to `ForkForward.Cargo.*` and publishes all the other changes and the reorganisation together, including the names of the packages that are not published yet. That version still has an 8.x number, continuing from 8.5.12. The previews until then keep the current names.
 - The main packages target .NET 8, 9 and 10, .NET Standard 2.0 and .NET Framework 4.7.2, as MassTransit 8.5.12 does.
 - Fixes made only in MassTransit 9 are not in this code. Where one is needed here, it is written independently, from the public advisory and this code.
 
