@@ -41,8 +41,9 @@ That is all. The code stays exactly as it is, `using MassTransit;` included.
 
 - **Usage telemetry is off.** MassTransit 8 reports
   [usage telemetry](../documentation/configuration/usage-telemetry.md) to a server of the original project by default.
-  ForkForward Cargo collects and sends nothing unless it is turned on. Calls to `DisableUsageTelemetry` keep working
-  and are no longer needed.
+  ForkForward Cargo collects nothing unless it is turned on, and then posts the report only to the address you set
+  (`ReportAddress`); without one, the report stays in the log. Calls to `DisableUsageTelemetry` keep working and are no
+  longer needed.
 - **Both packages at once.** A project must not reference ForkForward Cargo packages and the original `MassTransit`
   packages at the same time, directly or through another package: both contain `MassTransit.dll`. Move a project, and
   the libraries it uses, as a whole.

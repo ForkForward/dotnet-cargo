@@ -17,7 +17,7 @@ The open-source continuation of [MassTransit](https://github.com/MassTransit/Mas
 
 ## Moving from MassTransit 8
 
-Replace each `MassTransit.*` package reference with the `ForkForward.Cargo` package in the table. The code does not change: the types, their members and the behaviour are those of MassTransit 8.5.12, except that usage telemetry, which MassTransit 8 sends to the original project by default, is off unless you turn it on. The guide [Moving from MassTransit 8](https://forkforward.dev/dotnet-cargo/introduction/moving-from-masstransit/) lists what else to know.
+Replace each `MassTransit.*` package reference with the `ForkForward.Cargo` package in the table. The code does not change: the types, their members and the behaviour are those of MassTransit 8.5.12, except that usage telemetry, which MassTransit 8 sends to the original project by default, is off unless you turn it on, and is then sent only to an address you set. The guide [Moving from MassTransit 8](https://forkforward.dev/dotnet-cargo/introduction/moving-from-masstransit/) lists what else to know.
 
 ```csharp
 using MassTransit;
