@@ -14,10 +14,12 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <PackageId>MassTransit.RabbitMQ</PackageId>
-    <Title>MassTransit.RabbitMQ</Title>
-    <PackageTags>MassTransit;RabbitMQ</PackageTags>
-    <Description>MassTransit RabbitMQ transport support; $(Description)</Description>
+    <!-- Published as ForkForward.Cargo.RabbitMQ. It continues the original package MassTransit.RabbitMQ; the assembly name and namespaces are unchanged. -->
+    <IsPackable>true</IsPackable>
+    <PackageId>ForkForward.Cargo.RabbitMQ</PackageId>
+    <Title>ForkForward.Cargo.RabbitMQ</Title>
+    <PackageTags>forkforward;cargo;masstransit;messaging;servicebus;rabbitmq</PackageTags>
+    <Description>RabbitMQ transport for ForkForward Cargo; $(Description)</Description>
   </PropertyGroup>
 
   <ItemGroup>

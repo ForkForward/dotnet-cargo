@@ -5,3 +5,19 @@
 
 MassTransit
 Copyright 2007-2024 Chris Patterson
+
+-------------------------------------------------------------------------
+
+ForkForward Cargo
+Modifications copyright 2026 ForkForward contributors
+
+ForkForward Cargo is a fork of MassTransit, published by ForkForward at
+https://github.com/ForkForward/dotnet-cargo. It continues MassTransit 8 from
+commit d9f61f764c802785cc9a4be92547d8f5b63018d4 (tag v8.5.12, 2026-10-09) of
+https://github.com/MassTransit/MassTransit, under the Apache License,
+Version 2.0. The changes made by the fork are recorded in its git history.
+
+ForkForward is not affiliated with, sponsored by, or endorsed by Chris
+Patterson, Massient, Inc., or the MassTransit project. "MassTransit" is the
+name of the original project and is used only to identify the origin of
+the code.

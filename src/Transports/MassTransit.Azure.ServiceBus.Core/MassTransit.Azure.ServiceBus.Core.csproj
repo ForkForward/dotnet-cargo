@@ -14,10 +14,12 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <PackageId>MassTransit.Azure.ServiceBus.Core</PackageId>
-    <Title>MassTransit.Azure.ServiceBus.Core</Title>
-    <PackageTags>MassTransit;Azure;ServiceBus</PackageTags>
-    <Description>MassTransit Azure Service Bus Core transport support; $(Description)</Description>
+    <!-- Published as ForkForward.Cargo.AzureServiceBus. It continues the original package MassTransit.Azure.ServiceBus.Core; the assembly name and namespaces are unchanged. -->
+    <IsPackable>true</IsPackable>
+    <PackageId>ForkForward.Cargo.AzureServiceBus</PackageId>
+    <Title>ForkForward.Cargo.AzureServiceBus</Title>
+    <PackageTags>forkforward;cargo;masstransit;messaging;servicebus;azure;azureservicebus</PackageTags>
+    <Description>Azure Service Bus transport for ForkForward Cargo; $(Description)</Description>
   </PropertyGroup>
 
   <ItemGroup>

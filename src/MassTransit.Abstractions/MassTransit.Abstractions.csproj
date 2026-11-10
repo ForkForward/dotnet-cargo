@@ -15,8 +15,12 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <PackageTags>MassTransit</PackageTags>
-    <Description>$(Description)</Description>
+    <!-- Published as ForkForward.Cargo.Abstractions. It continues the original package MassTransit.Abstractions; the assembly name and namespaces are unchanged. -->
+    <IsPackable>true</IsPackable>
+    <PackageId>ForkForward.Cargo.Abstractions</PackageId>
+    <Title>ForkForward.Cargo.Abstractions</Title>
+    <PackageTags>forkforward;cargo;masstransit;messaging;servicebus</PackageTags>
+    <Description>Abstractions for ForkForward Cargo; $(Description)</Description>
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net472' ">

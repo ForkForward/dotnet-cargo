@@ -2,9 +2,11 @@
   <Import Project="..\Directory.Build.props"/>
 
   <PropertyGroup>
-    <Product>MassTransit</Product>
-    <Copyright>Copyright 2007-2024 Chris Patterson</Copyright>
-    <Authors>Chris Patterson</Authors>
+    <!-- Who publishes this fork. The original authors are credited in Copyright, in the package readme and in NOTICE. -->
+    <Product>ForkForward Cargo (fork of MassTransit)</Product>
+    <Copyright>Copyright 2007-2024 Chris Patterson. Modifications copyright 2026 ForkForward contributors.</Copyright>
+    <Authors>ForkForward</Authors>
+    <Company>ForkForward</Company>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <DebugSymbols>True</DebugSymbols>
@@ -17,20 +19,37 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <PackageIcon>mt-logo-small.png</PackageIcon>
     <PackageReadmeFile>NuGet.README.md</PackageReadmeFile>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-    <PackageProjectUrl>https://masstransit.io</PackageProjectUrl>
-    <Description>MassTransit provides a developer-focused, modern platform for creating distributed applications without complexity.</Description>
-    <IsPackable>True</IsPackable>
+    <PackageProjectUrl>https://github.com/ForkForward/dotnet-cargo</PackageProjectUrl>
+    <Description>ForkForward Cargo, the open-source continuation of MassTransit 8: a distributed application framework for .NET. Independent fork, not affiliated with the MassTransit project.</Description>
+    <!-- Only the projects that set IsPackable to true in their own project file are published,
+         each under a ForkForward.Cargo package id. The others are not packed until their names are decided:
+         their MassTransit package ids belong to the original authors. -->
+    <IsPackable>false</IsPackable>
 
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <!-- The version comes from the git tags: a tag v8.6.0 builds 8.6.0, a tag v8.6.0-preview.1 builds 8.6.0-preview.1.
+         Commits after the last tag build a preview, for example 8.6.0-preview.0.4 for the fourth commit after it.
+         The minimum keeps the fork's versions above the original 8.5.12 it was forked from. -->
+    <MinVerTagPrefix>v</MinVerTagPrefix>
+    <MinVerMinimumMajorMinor>8.6</MinVerMinimumMajorMinor>
+    <MinVerDefaultPreReleaseIdentifiers>preview.0</MinVerDefaultPreReleaseIdentifiers>
+  </PropertyGroup>
+
   <ItemGroup>
-    <None Include="..\..\mt-logo-small.png" Pack="true" Visible="false" PackagePath=""/>
-    <None Include="..\..\NuGet.README.md" Pack="true" Visible="false" PackagePath=""/>
+    <PackageReference Include="MinVer" PrivateAssets="All"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The Apache License 2.0 requires the NOTICE file to travel with every copy, so it is in every package. -->
+    <None Include="$(MSBuildThisFileDirectory)..\NuGet.README.md" Pack="true" Visible="false" PackagePath=""/>
+    <None Include="$(MSBuildThisFileDirectory)..\LICENSE" Pack="true" Visible="false" PackagePath=""/>
+    <None Include="$(MSBuildThisFileDirectory)..\NOTICE" Pack="true" Visible="false" PackagePath=""/>
   </ItemGroup>
 
 </Project>
