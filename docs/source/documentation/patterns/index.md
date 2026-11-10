@@ -1,0 +1,3 @@
+# Patterns
+
+MassTransit implements several message patterns, making it easy for developers to apply those patterns to their applications.

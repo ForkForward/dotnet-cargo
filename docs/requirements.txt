@@ -1,0 +1,2 @@
+# The documentation site generator, the same version as the other ForkForward sites.
+zensical==0.1.0

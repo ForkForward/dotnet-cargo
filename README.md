@@ -103,7 +103,9 @@ public class SubmitOrderConsumer : IConsumer<SubmitOrder>
 }
 ```
 
-Until this fork has its own documentation, use the MassTransit 8 documentation at [masstransit.io](https://masstransit.io). Check that a page describes version 8: features of version 9 are not in this fork.
+## Documentation
+
+The documentation is published at [forkforward.dev/dotnet-cargo](https://forkforward.dev/dotnet-cargo/). It is the MassTransit 8 documentation, inherited from the original project, with the names of the published packages updated; start with [Moving from MassTransit 8](https://forkforward.dev/dotnet-cargo/introduction/moving-from-masstransit/). Its source is in [docs/source](docs/source), and the Docs workflow publishes it on every change to `develop`. The pages at masstransit.io belong to the official MassTransit and may describe version 9, whose features are not in this fork.
 
 ## Building
 

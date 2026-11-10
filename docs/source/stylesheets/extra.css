@@ -1,0 +1,17 @@
+/* ForkForward colours, the same as on forkforward.dev and the ForkForward.Mapper documentation:
+   navy #14213D for the header and the red of the origin node, #E51B23, as the accent. */
+:root > * {
+  --md-primary-fg-color: #14213d;
+  --md-primary-fg-color--light: #2b3a5c;
+  --md-primary-fg-color--dark: #0b1426;
+  --md-primary-bg-color: #ffffff;
+  --md-primary-bg-color--light: #ffffffb3;
+  --md-accent-fg-color: #e51b23;
+  --md-accent-fg-color--transparent: #e51b231a;
+  --md-typeset-a-color: #2b5aa8;
+}
+
+/* Navy links would not be readable on the dark background. */
+[data-md-color-scheme="slate"] {
+  --md-typeset-a-color: #8fb0f0;
+}

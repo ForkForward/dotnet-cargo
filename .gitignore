@@ -26,6 +26,8 @@ _ReSharper*
 *.DotSettings.user
 
 docs/.vuepress/dist
+# The documentation site, built by Zensical (zensical.toml)
+/artifacts/
 .vscode
 .idea
 appsettings.Development.json

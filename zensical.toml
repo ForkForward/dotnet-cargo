@@ -1,0 +1,257 @@
+# Zensical configuration for the ForkForward Cargo documentation.
+#
+# Published to https://forkforward.dev/dotnet-cargo/ by .github/workflows/docs.yml.
+# Preview it locally:
+#
+#   pip install -r docs/requirements.txt
+#   zensical serve          # http://localhost:8000/dotnet-cargo/
+#
+# The pages are the MassTransit 8 documentation (Apache License 2.0, Copyright 2007-2024 Chris Patterson and the
+# MassTransit contributors), taken from the doc/ folder of the MassTransit repository as it was before commit
+# 87b5dc0c0 removed it, and converted from Docus to Zensical. ForkForward Cargo is a fork of MassTransit; see NOTICE
+# in the repository root.
+
+[project]
+site_name = "ForkForward Cargo"
+site_description = "The open-source continuation of MassTransit 8, the distributed application framework for .NET, under the Apache License 2.0."
+site_author = "Chris Patterson, Dru Sellers and the MassTransit contributors; ForkForward contributors"
+site_url = "https://forkforward.dev/dotnet-cargo/"
+copyright = "Copyright &copy; 2007-2024 Chris Patterson and the MassTransit contributors. Modifications &copy; 2026 ForkForward contributors. Apache License 2.0."
+
+repo_url = "https://github.com/ForkForward/dotnet-cargo"
+repo_name = "ForkForward/dotnet-cargo"
+edit_uri = "edit/develop/docs/source/"
+
+# The same layout as the other ForkForward projects: pages in docs/source, the generator's version in
+# docs/requirements.txt.
+docs_dir = "docs/source"
+site_dir = "artifacts/docs"
+
+# The order of the original site. The pages keep its addresses (without the numbers in the file names), so a path
+# from masstransit.io, such as /documentation/concepts/consumers, works here too.
+nav = [
+  { "Home" = "index.md" },
+  { "Introduction" = [
+    "introduction/index.md",
+    "introduction/moving-from-masstransit.md",
+  ] },
+  { "Quick Starts" = [
+    "quick-starts/index.md",
+    "quick-starts/in-memory.md",
+    "quick-starts/rabbitmq.md",
+    "quick-starts/azure-service-bus.md",
+    "quick-starts/amazon-sqs.md",
+    "quick-starts/postgresql.md",
+    "quick-starts/templates.md",
+  ] },
+  { "Documentation" = [
+    { "Concepts" = [
+      "documentation/concepts/index.md",
+      "documentation/concepts/messages.md",
+      "documentation/concepts/consumers.md",
+      "documentation/concepts/producers.md",
+      "documentation/concepts/exceptions.md",
+      "documentation/concepts/testing.md",
+      "documentation/concepts/requests.md",
+      "documentation/concepts/routing-slips.md",
+      "documentation/concepts/mediator.md",
+      "documentation/concepts/riders.md",
+    ] },
+    { "Configuration" = [
+      "documentation/configuration/index.md",
+      "documentation/configuration/consumers.md",
+      { "Saga State Machines" = [
+        "documentation/configuration/sagas/overview.md",
+        "documentation/configuration/sagas/state.md",
+        "documentation/configuration/sagas/event.md",
+        "documentation/configuration/sagas/requests.md",
+        "documentation/configuration/sagas/registration.md",
+        "documentation/configuration/sagas/custom.md",
+      ] },
+      { "Transports" = [
+        "documentation/configuration/transports/rabbitmq.md",
+        "documentation/configuration/transports/azure-service-bus.md",
+        "documentation/configuration/transports/amazon-sqs.md",
+        "documentation/configuration/transports/activemq.md",
+        "documentation/configuration/transports/sql.md",
+        "documentation/configuration/transports/kafka.md",
+        "documentation/configuration/transports/azure-event-hub.md",
+        "documentation/configuration/transports/azure-functions.md",
+        "documentation/configuration/transports/aws-lambda.md",
+      ] },
+      { "Middleware" = [
+        "documentation/configuration/middleware/index.md",
+        "documentation/configuration/middleware/filters.md",
+        "documentation/configuration/middleware/scoped.md",
+        "documentation/configuration/middleware/outbox.md",
+        "documentation/configuration/middleware/transactions.md",
+      ] },
+      { "Persistence" = [
+        "documentation/configuration/persistence/azure-cosmos.md",
+        "documentation/configuration/persistence/azure-service-bus.md",
+        "documentation/configuration/persistence/azure-table.md",
+        "documentation/configuration/persistence/dapper.md",
+        "documentation/configuration/persistence/dynamodb.md",
+        "documentation/configuration/persistence/entity-framework.md",
+        "documentation/configuration/persistence/marten.md",
+        "documentation/configuration/persistence/mongodb.md",
+        "documentation/configuration/persistence/nhibernate.md",
+        "documentation/configuration/persistence/redis.md",
+      ] },
+      "documentation/configuration/scheduling.md",
+      { "Topology" = [
+        "documentation/configuration/topology/index.md",
+        "documentation/configuration/topology/message.md",
+        "documentation/configuration/topology/conventions.md",
+        "documentation/configuration/topology/deploy.md",
+      ] },
+      { "Routing Slips" = [
+        "documentation/configuration/routing-slips/overview.md",
+        "documentation/configuration/routing-slips/registration.md",
+        "documentation/configuration/routing-slips/routing_slip.md",
+      ] },
+      { "Integrations" = [
+        "documentation/configuration/integrations/signalr.md",
+        "documentation/configuration/integrations/external-systems.md",
+        "documentation/configuration/integrations/logging.md",
+        "documentation/configuration/integrations/nsb.md",
+        "documentation/configuration/integrations/roslyn-analyzer.md",
+      ] },
+      "documentation/configuration/multibus.md",
+      "documentation/configuration/observability.md",
+      "documentation/configuration/obsolete.md",
+      "documentation/configuration/serialization.md",
+      "documentation/configuration/test-harness.md",
+      "documentation/configuration/usage-telemetry.md",
+    ] },
+    { "Patterns" = [
+      "documentation/patterns/index.md",
+      { "Saga" = [
+        "documentation/patterns/saga/index.md",
+        "documentation/patterns/saga/consumer-sagas.md",
+        "documentation/patterns/saga/state-machine.md",
+        "documentation/patterns/saga/persistence.md",
+        "documentation/patterns/saga/guidance.md",
+      ] },
+      { "Routing Slips" = [
+        "documentation/patterns/routing-slips/monitor-via-saga.md",
+      ] },
+      "documentation/patterns/claim-check.md",
+      "documentation/patterns/durable-futures.md",
+      "documentation/patterns/in-memory-outbox.md",
+      "documentation/patterns/transactional-outbox.md",
+      "documentation/patterns/newid.md",
+      "documentation/patterns/job-consumers.md",
+    ] },
+    { "Transports" = [
+      "documentation/transports/index.md",
+      "documentation/transports/rabbitmq.md",
+      "documentation/transports/azure-service-bus.md",
+      "documentation/transports/amazon-sqs.md",
+      "documentation/transports/activemq.md",
+      "documentation/transports/in-memory.md",
+      "documentation/transports/kafka.md",
+      "documentation/transports/sql.md",
+    ] },
+  ] },
+  { "Getting Help" = [
+    "support/index.md",
+    "support/packages.md",
+    "support/samples.md",
+    "support/upgrade.md",
+    "support/common-mistakes.md",
+    "support/show-configuration.md",
+  ] },
+]
+
+# ForkForward colours, the same as the other ForkForward sites.
+extra_css = ["stylesheets/extra.css"]
+
+[project.theme]
+language = "en"
+features = [
+  "announce.dismiss",
+  "content.action.edit",
+  "content.code.annotate",
+  "content.code.copy",
+  "content.code.select",
+  "content.footnote.tooltips",
+  "content.tabs.link",
+  "content.tooltips",
+  "navigation.footer",
+  "navigation.indexes",
+  "navigation.instant",
+  "navigation.instant.prefetch",
+  "navigation.path",
+  "navigation.sections",
+  "navigation.top",
+  "navigation.tracking",
+  "search.highlight",
+]
+
+# Cargo has no logo of its own yet, and the MassTransit logo is not ours to use: a package icon stands in.
+[project.theme.icon]
+logo = "lucide/package"
+repo = "fontawesome/brands/github"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme)"
+primary = "custom"
+accent = "custom"
+toggle.icon = "lucide/sun-moon"
+toggle.name = "Switch to light mode"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: light)"
+scheme = "default"
+primary = "custom"
+accent = "custom"
+toggle.icon = "lucide/sun"
+toggle.name = "Switch to dark mode"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: dark)"
+scheme = "slate"
+primary = "custom"
+accent = "custom"
+toggle.icon = "lucide/moon"
+toggle.name = "Switch to system preference"
+
+[[project.extra.social]]
+icon = "fontawesome/brands/github"
+link = "https://github.com/ForkForward/dotnet-cargo"
+name = "Source code on GitHub"
+
+[[project.extra.social]]
+icon = "simple/nuget"
+link = "https://www.nuget.org/packages/ForkForward.Cargo"
+name = "ForkForward.Cargo on nuget.org"
+
+[project.markdown_extensions]
+abbr = {}
+admonition = {}
+attr_list = {}
+def_list = {}
+footnotes = {}
+md_in_html = {}
+toc.permalink = true
+pymdownx.betterem = {}
+pymdownx.caret = {}
+pymdownx.details = {}
+pymdownx.emoji.emoji_generator = "zensical.extensions.emoji.to_svg"
+pymdownx.emoji.emoji_index = "zensical.extensions.emoji.twemoji"
+pymdownx.highlight.anchor_linenums = true
+pymdownx.highlight.line_spans = "__span"
+pymdownx.highlight.pygments_lang_class = true
+pymdownx.inlinehilite = {}
+pymdownx.keys = {}
+pymdownx.magiclink = {}
+pymdownx.mark = {}
+pymdownx.smartsymbols = {}
+pymdownx.superfences.custom_fences = [
+  { name = "mermaid", class = "mermaid", format = "pymdownx.superfences.fence_code_format" },
+]
+pymdownx.tabbed.alternate_style = true
+pymdownx.tabbed.combine_header_slug = true
+pymdownx.tasklist.custom_checkbox = true
+pymdownx.tilde = {}

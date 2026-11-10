@@ -21,7 +21,8 @@
   <PropertyGroup>
     <PackageReadmeFile>NuGet.README.md</PackageReadmeFile>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/ForkForward/dotnet-cargo</PackageProjectUrl>
+    <!-- The documentation site; nuget.org shows it as the project website. The source link comes from PublishRepositoryUrl. -->
+    <PackageProjectUrl>https://forkforward.dev/dotnet-cargo/</PackageProjectUrl>
     <Description>ForkForward Cargo, the open-source continuation of MassTransit 8: a distributed application framework for .NET. Independent fork, not affiliated with the MassTransit project.</Description>
     <!-- Only the projects that set IsPackable to true in their own project file are published,
          each under a ForkForward.Cargo package id. The others are not packed until their names are decided:
