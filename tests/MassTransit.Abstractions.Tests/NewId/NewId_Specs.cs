@@ -187,17 +187,44 @@
         {
             NewId.SetTickProvider(new StopwatchTickProvider());
 
-            var first = NewId.NextSequentialGuid();
+            // The first 14 characters are the timestamp in units of 65,536 ticks (about 6.5 ms). The two calls share
+            // them unless such a boundary falls between the calls, so generate again when one does; with a wrong
+            // algorithm they never match.
+            Guid first;
             var next = new Guid[3];
-            NewId.NextSequentialGuid(next, 0, 3);
+            var attempt = 0;
+            do
+            {
+                first = NewId.NextSequentialGuid();
+                NewId.NextSequentialGuid(next, 0, 3);
+            }
+            while (Timestamp(next[0]) != Timestamp(first) && ++attempt < 10);
 
             for (var i = 0; i < next.Length - 1; i++)
             {
-                Assert.That(next[i].ToString().Substring(0,14), Is.EqualTo(first.ToString().Substring(0, 14)));
+                Assert.That(Timestamp(next[i]), Is.EqualTo(Timestamp(first)));
                 Assert.That(next[i].ToString().Substring(19,13), Is.EqualTo(first.ToString().Substring(19, 13)));
                 Assert.That(next[i].ToString().Substring(0,32), Is.EqualTo(next[i+1].ToString().Substring(0,32)));
-                Assert.That(int.Parse(next[i].ToString().Substring(32,2)), Is.EqualTo(i));
+
+                // The sequence restarts at 0 only when the clock has moved since the previous call, which it may not
+                // have, so neighbours are compared instead of expecting 0, 1, 2.
+                Assert.That(Sequence(next[i + 1]), Is.EqualTo(Sequence(next[i]) + 1));
             }
+        }
+
+        static string Timestamp(Guid id)
+        {
+            return id.ToString().Substring(0, 14);
+        }
+
+        /// <summary>
+        /// The sequence is in characters 32 to 35, with its two bytes swapped.
+        /// </summary>
+        static int Sequence(Guid id)
+        {
+            var text = id.ToString();
+
+            return Convert.ToInt32(text.Substring(34, 2) + text.Substring(32, 2), 16);
         }
 
         [Test]
