@@ -1,12 +1,24 @@
 # Usage Telemetry
 
-!!! warning "Reported to the original MassTransit project"
+!!! info "Off by default in ForkForward Cargo"
 
-    ForkForward Cargo contains this feature unchanged from MassTransit 8.5.12, and it is on by default: about five
-    minutes after the bus starts, the application sends the report shown below to
-    `https://usage-tracking.masstransit.io/usage`, a server of the original MassTransit project. ForkForward does not
-    receive this data and has no say over what happens to it. To turn it off, use one of the [opt-out](#opt-out)
-    settings. The rest of this page is the original project's description, where "we" is the MassTransit team.
+    MassTransit 8 collects this usage telemetry by default and sends it to
+    `https://usage-tracking.masstransit.io/usage`, a server of the original MassTransit project. ForkForward Cargo turns
+    it off by default: nothing is collected or sent unless you turn it on, in code or with the environment variable.
+
+    ```csharp
+    services.AddMassTransit(x =>
+    {
+        x.ConfigureUsageTelemetryOptions(options => options.Enabled = true);
+    });
+    ```
+
+    `MASSTRANSIT_USAGE_TELEMETRY=true` turns it on as well. When the variable is set, it takes precedence over the
+    code, `DisableUsageTelemetry` included. Turned on, the report still goes to the original project's server:
+    ForkForward does not receive it and has no say over what happens to it.
+
+    The rest of this page is the original project's description, where "we" is the MassTransit team, written for when
+    the telemetry was on by default.
 
 As part of our ongoing commitment to improving MassTransit, in v8.40 we are introducing anonymous usage telemetry to better understand how the community utilizes the framework. This feature will provide valuable insights into bus configurations, transport usage, and endpoint patterns, helping us identify trends, optimize performance, and prioritize future enhancements. By collecting only non-identifiable data, we ensure user privacy while enabling more informed development decisions that benefit the entire MassTransit ecosystem.
 
