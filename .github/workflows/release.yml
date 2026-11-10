@@ -1,0 +1,166 @@
+name: Release
+
+# Builds, tests, packs and publishes the ForkForward.Cargo packages to nuget.org.
+#
+# One workflow publishes both kinds of version:
+#
+# - Previews (now). Every push to develop publishes the packages with a preview version that MinVer computes
+#   from the last tag: 8.6.0-preview.0.12 is the 12th commit after it.
+#   The publish job runs in the environment "preview".
+# - Releases (later). Pushing a version tag, v8.6.0 or v8.6.0-preview.1, publishes exactly that version and
+#   creates the GitHub release. The publish job runs in the environment "release", where required reviewers
+#   make a maintainer approve every release.
+#   To publish only releases, delete the "branches" trigger below. Nothing else changes: the nuget.org policy,
+#   the secret and the environments stay as they are.
+#
+# Run by hand (Actions > Release > Run workflow): on develop or on a tag it publishes as above; on any other branch
+# it is a dry run that builds, tests and packs, and keeps the packages as an artifact of the run.
+#
+# Publishing uses NuGet Trusted Publishing: the publish job exchanges a GitHub OIDC token for a NuGet API key that
+# is valid for one hour, so no NuGet key is stored in this repository. It needs, once, outside this repository:
+# - on nuget.org, a Trusted Publishing policy owned by the ForkForward organization for the repository
+#   ForkForward/dotnet-cargo and the workflow file release.yml, with the environment left empty so that it covers
+#   both "preview" and "release";
+# - the repository secret NUGET_USER: the nuget.org user name of the person who created that policy;
+# - the environments "preview" (deployment branch: develop) and "release" (deployment tags: v*.*.*, required reviewers).
+on:
+  push:
+    branches:
+    - develop
+    tags:
+    - 'v*.*.*'
+    # No path filter: how GitHub combines one with tag pushes is not documented clearly enough to trust it for releases.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# One run per branch or tag at a time; a second push waits instead of cancelling a publish halfway.
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  test:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      # The tests do not need a package version; without the tags MinVer would only warn.
+      MinVerSkip: true
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v7
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v6
+      with:
+        # The .NET 10 SDK builds everything; the unit tests run on the .NET 9 runtime.
+        dotnet-version: |
+          9.0.x
+          10.0.x
+    - name: Unit tests
+      run: dotnet test -c Release -f net9.0 --logger GitHubActions --filter Category!=Flaky
+      working-directory: tests/MassTransit.Tests
+    - name: Abstractions tests
+      run: dotnet test -c Release -f net9.0 --logger GitHubActions --filter Category!=Flaky
+      working-directory: tests/MassTransit.Abstractions.Tests
+
+  pack:
+    name: Pack
+    # The packages include net472, which the projects target only when they are built on Windows.
+    runs-on: windows-latest
+    timeout-minutes: 45
+    outputs:
+      version: ${{ steps.check.outputs.version }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v7
+      with:
+        # MinVer computes the version from the tags, so it needs the full history.
+        fetch-depth: 0
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v6
+      with:
+        dotnet-version: 10.0.x
+    # Packs the projects that set IsPackable to true; see src/Directory.Build.props.
+    - name: Pack
+      run: dotnet pack MassTransit.sln -c Release -o artifacts/packages
+    - name: Check the packages
+      id: check
+      shell: pwsh
+      run: |
+        $packages = @(Get-ChildItem artifacts/packages/*.nupkg)
+        if ($packages.Count -eq 0) { throw 'No package was created.' }
+
+        # Only ForkForward.Cargo package ids may be published: the MassTransit ids belong to the original authors.
+        $foreign = @($packages | Where-Object { -not $_.Name.StartsWith('ForkForward.Cargo.') })
+        if ($foreign.Count -gt 0) { throw "Not a ForkForward.Cargo package: $($foreign.Name -join ', ')" }
+
+        $main = $packages | Where-Object { $_.Name -match '^ForkForward\.Cargo\.\d' } | Select-Object -First 1
+        if (-not $main -or $main.Name -notmatch '^ForkForward\.Cargo\.(\d+\.\d+\.\d+.*)\.nupkg$') { throw 'ForkForward.Cargo was not packed.' }
+        $version = $Matches[1]
+
+        $other = @($packages | Where-Object { -not $_.Name.EndsWith(".$version.nupkg") })
+        if ($other.Count -gt 0) { throw "Not version ${version}: $($other.Name -join ', ')" }
+
+        if ($env:GITHUB_REF_TYPE -eq 'tag') {
+          # A release is published with exactly the version of its tag.
+          $expected = $env:GITHUB_REF_NAME.Substring(1)
+          if ($version -ne $expected) { throw "The tag $env:GITHUB_REF_NAME builds $version, not $expected." }
+        }
+        elseif (-not $version.Contains('-')) {
+          # A stable version is published only from its tag, through the "release" environment.
+          throw "$version is not a preview version; publish it by pushing its tag v$version."
+        }
+
+        "version=$version" >> $env:GITHUB_OUTPUT
+        "Version **$version**: $($packages.Count) packages" >> $env:GITHUB_STEP_SUMMARY
+        $packages | ForEach-Object { "- $($_.Name)" } >> $env:GITHUB_STEP_SUMMARY
+    - name: Packages
+      uses: actions/upload-artifact@v7
+      with:
+        name: packages
+        path: artifacts/packages/*.nupkg
+        if-no-files-found: error
+
+  publish:
+    name: Publish ${{ needs.pack.outputs.version }}
+    needs: [test, pack]
+    # Previews come from develop and releases from version tags; a run on any other branch ends after packing.
+    if: github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref_type == 'tag' && 'release' || 'preview' }}
+    permissions:
+      id-token: write  # lets this job request the GitHub OIDC token that nuget.org trusts
+      contents: write  # creates the GitHub release for a tag
+    steps:
+    - name: Packages
+      uses: actions/download-artifact@v8
+      with:
+        name: packages
+        path: packages
+    # The API key is valid for one hour, so it is requested right before the push.
+    - name: NuGet login (OIDC to temporary API key)
+      uses: NuGet/login@v1
+      id: login
+      with:
+        # The nuget.org user name of the person who created the Trusted Publishing policy.
+        # It is not the organization that owns the policy (ForkForward) and not an e-mail address:
+        # nuget.org rejects the login with HTTP 401 for either of those.
+        user: ${{ secrets.NUGET_USER }}
+    # The packages embed their symbols (DebugType embedded), so there is no .snupkg to push.
+    - name: NuGet push
+      run: dotnet nuget push "packages/*.nupkg" --api-key ${{ steps.login.outputs.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+    - name: GitHub release
+      if: github.ref_type == 'tag'
+      env:
+        GH_TOKEN: ${{ github.token }}
+        VERSION: ${{ needs.pack.outputs.version }}
+      run: |
+        prerelease=""
+        case "$VERSION" in *-*) prerelease="--prerelease" ;; esac
+        gh release create "$GITHUB_REF_NAME" packages/*.nupkg \
+          --repo "$GITHUB_REPOSITORY" \
+          --title "ForkForward Cargo $VERSION" \
+          --generate-notes \
+          $prerelease

@@ -36,9 +36,10 @@ If you want MassTransit 9, new features from the original authors, or commercial
 
 ## Status
 
-- The fork has just been created. The code is MassTransit 8.5.12 unchanged: the packages, assemblies and namespaces are still called `MassTransit`.
-- Nothing has been published to nuget.org yet. The `MassTransit` packages on nuget.org belong to the original authors, not to this fork.
-- The project will be published under its own name:
+- The fork has just been created. The code is MassTransit 8.5.12 unchanged: only the package names are new; the assemblies and namespaces are still called `MassTransit`.
+- **Preview packages** are published to nuget.org from the `develop` branch, with versions such as `8.6.0-preview.0.12`. Stable releases will be published from version tags such as `v8.6.0`. The `MassTransit` packages on nuget.org belong to the original authors, not to this fork.
+- A preview package contains `MassTransit.dll` signed with the original key, so a project must not reference ForkForward Cargo and the original `MassTransit` packages at the same time.
+- The project is published under its own name:
 
   | | Name |
   |---|---|
@@ -46,7 +47,7 @@ If you want MassTransit 9, new features from the original authors, or commercial
   | Repository | [ForkForward/dotnet-cargo](https://github.com/ForkForward/dotnet-cargo) |
   | Packages | `ForkForward.Cargo.*` |
 
-  The planned packages, and the MassTransit packages they continue:
+  The packages, and the MassTransit packages they continue:
 
   | Package | Continues | Purpose |
   |---|---|---|
@@ -57,13 +58,19 @@ If you want MassTransit 9, new features from the original authors, or commercial
   | `ForkForward.Cargo.EntityFrameworkCore` | `MassTransit.EntityFrameworkCore` | Entity Framework Core integration |
   | `ForkForward.Cargo.Testing` | `MassTransit.TestFramework` | Testing tools |
 
-  Not decided yet: the names of the other packages (the remaining transports, persistence, scheduling and riders), and whether the namespaces and assembly names change together with the package names.
+  Not decided yet: the names of the other packages (the remaining transports, persistence, scheduling and riders), which are not published until then, and whether the namespaces and assembly names change together with the package names.
 - The main packages target .NET 8, 9 and 10, .NET Standard 2.0 and .NET Framework 4.7.2, as MassTransit 8.5.12 does.
 - Fixes made only in MassTransit 9 are not in this code. Where one is needed here, it is written independently, from the public advisory and this code.
 
 ## Using it
 
-Until the rename, the code is used exactly like MassTransit 8:
+Replace each `MassTransit.*` package reference with the `ForkForward.Cargo` package from the table above:
+
+```
+dotnet add package ForkForward.Cargo.RabbitMQ --prerelease
+```
+
+The code stays exactly as it is with MassTransit 8:
 
 ```csharp
 using MassTransit;
